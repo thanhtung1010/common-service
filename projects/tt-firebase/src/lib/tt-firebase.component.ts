@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   template: `
     <p>
-      test npm token!
+      test npm token - v2!
     </p>
   `,
   styles: ``
