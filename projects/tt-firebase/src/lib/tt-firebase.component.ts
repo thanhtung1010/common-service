@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   template: `
     <p>
-      tt-firebase works!
+      git action workflow works!
     </p>
   `,
   styles: ``
