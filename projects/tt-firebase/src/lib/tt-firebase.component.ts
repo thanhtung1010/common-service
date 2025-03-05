@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   template: `
     <p>
-      git action workflow works!
+      test npm token!
     </p>
   `,
   styles: ``
