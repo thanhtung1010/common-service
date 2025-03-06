@@ -1,5 +1,5 @@
 {
-  "name": "tt-firebase",
+  "name": "common-service",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

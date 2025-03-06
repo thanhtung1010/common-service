@@ -1,4 +1,5 @@
 import { Dependencies } from "firebase/auth";
+import { DocumentData } from "firebase/firestore";
 
 export interface IFirebaseConfig {
   apiKey: string;
@@ -22,14 +23,9 @@ export interface IInitFirebase {
   authDependencies?: Dependencies;
 }
 
-export interface IFBCreateDocument {
-  createdAt: Date;
-}
-
-export interface IFBUpdateDocument {
-  updatedAt: Date;
-}
-
-export interface IFBDeleteDocument {
-  deletedAt: Date;
+export interface IDocumentData extends DocumentData {
+  firebaseId: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
 }

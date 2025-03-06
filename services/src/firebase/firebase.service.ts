@@ -3,15 +3,15 @@ import { FirebaseApp, initializeApp } from "firebase/app";
 import { Auth, browserLocalPersistence, browserPopupRedirectResolver, Dependencies, getAuth, initializeAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { collection, doc, Firestore, getDoc, getFirestore, where, query, getDocs, addDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { FIREBASE_CONFIG_TOKEN, FIREBASE_ERROR_SERVICE, FIRESTORE_DEFAULT_COLLECTION } from './tt-firebase.enum';
-import { IFirebaseConfig, IFirestoreSearchDocument, IInitFirebase } from './tt-firebase.interface';
+import { FIREBASE_CONFIG_TOKEN, FIREBASE_ERROR_SERVICE, FIRESTORE_DEFAULT_COLLECTION } from './firebase.enum';
+import { IFirebaseConfig, IFirestoreSearchDocument, IInitFirebase } from './firebase.interface';
 import { forkJoin, from, Observable, Subscriber } from 'rxjs';
-import { AuthDependenciesModel, InitFirebaseModel } from './tt-firebase.model';
+import { AuthDependenciesModel, InitFirebaseModel } from './firebase.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TTFirebaseService {
+export class FirebaseService {
   private _firebaseApp!: FirebaseApp;
   private _auth!: Auth;
   private _store!: Firestore;
@@ -44,9 +44,10 @@ export class TTFirebaseService {
         } else {
           if (!this._firebaseApp) {
             this._firebaseApp = initializeApp(this.config, option?.initializeAppName);
+          } else {
+            console.warn('firebase app already init, system skip this step');
           }
 
-          console.warn('firebase app already init, system skip this step');
           const initReqs: Array<Observable<Auth | Firestore>> = [];
           if (_option.auth) {
             initReqs.push(this.initAuth(option?.authDependencies));

@@ -1,14 +1,14 @@
 {
-  "name": "tt-firebase",
+  "name": "services",
   "version": "0.0.1",
   "keywords": [],
   "author": {
-    "name": "Trịnh Thanh Tùng",
+    "name": "Tùng The Dev",
     "email": "trinhthanhtung1010@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/thanhtung1010/tt-firebase"
+    "url": "https://github.com/thanhtung1010/common-services"
   },
   "peerDependencies": {
     "@angular/common": "^19.2.0",

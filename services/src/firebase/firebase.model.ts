@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
-import { BaseModel, Default } from './base.model';
-import { IFBCreateDocument, IFBDeleteDocument, IFBUpdateDocument, IInitFirebase } from './tt-firebase.interface';
+import { BaseModel, Default } from '../base/model';
+import { IInitFirebase } from './firebase.interface';
 import { AuthErrorMap, browserLocalPersistence, browserPopupRedirectResolver, Dependencies, Persistence, PopupRedirectResolver } from 'firebase/auth';
 
 @Exclude()
@@ -35,42 +35,44 @@ export class AuthDependenciesModel extends BaseModel implements Dependencies {
   errorMap?: AuthErrorMap;
 }
 
-@Exclude()
-export class BaseFBCreateDocumentModel extends BaseModel implements IFBCreateDocument {
+@Expose()
+export class CreateDocumentModel extends BaseModel {
   @Expose()
   @Type(() => Date)
   @Transform(params => {
     const { value } = params;
-    if (!value) return new Date();
+    if (!value) return new Date().toISOString();
 
     return value;
   })
-  createdAt!: Date;
+  createdAt!: string;
 }
 
-@Exclude()
-export class BaseFBUpdateDocumentModel extends BaseModel implements IFBUpdateDocument {
+@Expose()
+export class UpdateDocumentModel extends BaseModel {
+  @Expose()
+  firebaseId!: string;
 
   @Expose()
   @Type(() => Date)
   @Transform(params => {
     const { value } = params;
-    if (!value) return new Date();
+    if (!value) return new Date().toISOString();
 
     return value;
   })
-  updatedAt!: Date;
+  updatedAt!: string;
 }
 
-@Exclude()
-export class BaseFBDeleteDocumentModel extends BaseModel implements IFBDeleteDocument {
+@Expose()
+export class DeleteDocumentModel extends UpdateDocumentModel {
   @Expose()
   @Type(() => Date)
   @Transform(params => {
     const { value } = params;
-    if (!value) return new Date();
+    if (!value) return new Date().toISOString();
 
     return value;
   })
-  deletedAt!: Date;
+  deletedAt!: string;
 }

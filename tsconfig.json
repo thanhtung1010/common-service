@@ -7,7 +7,7 @@
     "strict": true,
     "paths": {
       "tt-firebase": [
-        "./dist/tt-firebase"
+        "./dist/common-service"
       ]
     },
     "noImplicitOverride": true,
