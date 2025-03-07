@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { FirebaseService } from "./firebase.service";
 import { catchError, forkJoin, from, Observable, of, Subscriber, switchMap } from "rxjs";
 import { FIREBASE_ERROR_SERVICE } from "./firebase.enum";
-import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
-import { IDocumentData } from "./firebase.interface";
+import { addDoc, collection, doc, getDoc, getDocs, orderBy, Query, query, updateDoc, where } from "firebase/firestore";
+import { IDocumentData, IFirestoreSearchDocument } from "./firebase.interface";
 import { instanceToPlain } from "class-transformer";
 import { CreateDocumentModel, DeleteDocumentModel, UpdateDocumentModel } from "./firebase.model";
 
@@ -34,8 +34,9 @@ export class FirebaseCollectionService<T> {
           subs.complete();
         } else {
           const _ref = collection(this.firebaseService.store, this.collection);
-          debugger
-          from(addDoc(_ref, this.isInstance(data) ? CreateDocumentModel.toJson(data) : data))
+          data.createdById = this.firebaseService.user.uid;
+          const dataJson = this.isInstance(data) ? CreateDocumentModel.toJson(data) : data;
+          from(addDoc(_ref, dataJson))
           .pipe(
             catchError(error => {
               subs.error(error);
@@ -65,7 +66,7 @@ export class FirebaseCollectionService<T> {
     });
   }
 
-  updateDocument(firebaseID: string, data: UpdateDocumentModel): Observable<IDocumentData> {
+  updateDocument(data: UpdateDocumentModel): Observable<IDocumentData> {
     return new Observable((subs: Subscriber<IDocumentData>) => {
       try {
         const checkValid = this.firebaseService.checkValidService(this.collection);
@@ -73,7 +74,7 @@ export class FirebaseCollectionService<T> {
           subs.error(checkValid);
           subs.complete();
         } else {
-          const _docRef = doc(this.firebaseService.store, this.collection, firebaseID);
+          const _docRef = doc(this.firebaseService.store, this.collection, data.firebaseId);
           from(updateDoc(_docRef, {...data}))
           .pipe(
             catchError(error => {
@@ -113,13 +114,64 @@ export class FirebaseCollectionService<T> {
         } else {
           const _requests: Array<Observable<void>> = [];
           datas.forEach(item => {
-            const _docRef = doc(this.firebaseService.store, this.collection, item.firebaseId);
-            _requests.push(from(updateDoc(_docRef, {...item})));
+            if (item.firebaseId) {
+              const _docRef = doc(this.firebaseService.store, this.collection, item.firebaseId);
+              _requests.push(from(updateDoc(_docRef, {...item})));
+            }
           });
 
           forkJoin(_requests).subscribe({
             next: resp => {
               subs.next(resp.map(elm => typeof elm === 'function'));
+              subs.complete();
+            },
+            error: error => {
+              subs.error(error);
+              subs.complete();
+            },
+          });
+        }
+      } catch (error) {
+        subs.error(error);
+        subs.complete();
+      }
+    });
+  }
+
+  searchDocuments(collectionName: string, searchFields: Array<IFirestoreSearchDocument>): Observable<Array<IDocumentData>> {
+    return new Observable((subs: Subscriber<Array<IDocumentData>>) => {
+      try {
+        const checkValid = this.firebaseService.checkValidService(this.collection);
+        if (checkValid.code && checkValid.code === FIREBASE_ERROR_SERVICE.STORE) {
+          subs.error(checkValid);
+          subs.complete();
+        } else {
+
+          const _ref = collection(this.firebaseService.store, collectionName);
+          let _query: Query = query(_ref, where('createdById', '==', this.firebaseService.user.uid));
+          if (searchFields.length) {
+            searchFields.forEach(sf => {
+              _query = query(_ref, where(sf.field, sf.op, sf.value));
+            });
+          }
+          _query = query(_query, orderBy('createdAt', 'desc'));
+          const _userSnap = from(getDocs(_ref));
+
+          _userSnap.subscribe({
+            next: resp => {
+              let _data: Array<IDocumentData> = [];
+
+              if (!resp.empty) {
+                resp.forEach((doc) => {
+                  const _docdata: IDocumentData = {
+                    ...doc.data(),
+                    firebaseId: doc.id
+                  };
+                  _data.push(_docdata);
+                });
+              }
+
+              subs.next(_data);
               subs.complete();
             },
             error: error => {
