@@ -4,7 +4,7 @@ export interface IAppConfig {
   production: boolean;
   defaultLang: string;
   lang: string;
-  tokenKey: string;
+  token: string;
   assetsUrl: string;
   apiUrl: string;
   email: string;
@@ -36,3 +36,11 @@ export interface IGoogleConfig {
 export interface IRemoteModuleUrl {
   [key: string]: any;
 }
+
+export interface IMenuItem {
+  title: string;
+  label: string;
+  href: string;
+  children: Array<IMenuItem>;
+  permission: []
+};

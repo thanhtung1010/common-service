@@ -1,5 +1,5 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
-import { BaseModel, Default } from '../base/model';
+import { BaseModel, Default } from '../base/base.model';
 import { FIREBASE_AUTH_PROVIDER, IFirebaseUser, IFirebaseUserMetadata, IInitFirebase } from './firebase.interface';
 import {
   AuthErrorMap,
@@ -70,12 +70,10 @@ export class InitFirebaseModel extends BaseModel implements IInitFirebase {
 @Exclude()
 export class AuthDependenciesModel extends BaseModel implements Dependencies {
   @Expose()
-  @Default(browserLocalPersistence)
-  persistence?: Persistence | Persistence[];
+  persistence: Persistence | Persistence[] = browserLocalPersistence;
 
   @Expose()
-  @Default(browserPopupRedirectResolver)
-  popupRedirectResolver?: PopupRedirectResolver;
+  popupRedirectResolver: PopupRedirectResolver = browserPopupRedirectResolver;
 
   @Expose()
   errorMap?: AuthErrorMap;

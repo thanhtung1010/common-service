@@ -36,7 +36,7 @@ export class FirebaseService {
 
   constructor(
     @Inject(FIREBASE_CONFIG_TOKEN) private config: IFirebaseConfig,
-  ) { }
+  ) {}
 
   //#region init
   init(option?: IInitFirebase): Observable<FirebaseApp> {
@@ -87,6 +87,7 @@ export class FirebaseService {
         }
 
         if (document !== undefined) {
+          dependencies = AuthDependenciesModel.fromJson(dependencies ?? {});
           this._auth = initializeAuth(this._firebaseApp, dependencies);
         } else {
           this._auth = getAuth(this._firebaseApp);
@@ -161,6 +162,42 @@ export class FirebaseService {
   }
 
   //#region method
+  authStateChanged(): Observable<FirebaseUserModel | null> {
+    return new Observable((subs: Subscriber<FirebaseUserModel | null>) => {
+      try {
+        const checkValid = this.checkValidService('');
+        if (
+          checkValid.code
+          && checkValid.code !== FIREBASE_ERROR_SERVICE.COLLECTION
+          && checkValid.code !== FIREBASE_ERROR_SERVICE.STORE
+        ) {
+          subs.error(checkValid);
+          subs.complete();
+        } else {
+          onAuthStateChanged(this._auth,
+            (user) => {
+              if (user) {
+                this._user = FirebaseUserModel.fromJson(user);
+                subs.next(this._user);
+              } else {
+                subs.next(null);
+              }
+              subs.complete();
+            },
+            error => {
+              subs.error(error);
+              subs.complete();
+            }
+          );
+        }
+      } catch (error) {
+        this.logout();
+        subs.error(error);
+        subs.complete();
+      }
+    });
+  }
+
   googleLogin(): Observable<FirebaseUserModel> {
     return new Observable((subs: Subscriber<FirebaseUserModel>) => {
       try {
