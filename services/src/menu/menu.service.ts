@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { filter, map, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 import { MENU_TOKEN } from './menu.enum';
 import { MenuItemDto } from './menu.dto';
 import { IMenuItem } from './menu.interface';
@@ -10,17 +10,17 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class MenuService {
     //#region variable
-    private _menu$: Subject<Array<MenuItemDto>> = new Subject();
-    private _toggleVisibleMenu$: Subject<boolean> = new Subject();
-    private _breadcrumb$: Subject<Array<string>> = new Subject();
+    private _menu$: BehaviorSubject<Array<MenuItemDto>> = new BehaviorSubject<Array<MenuItemDto>>([]);
+    private _toggleVisibleMenu$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+    private _breadcrumb$: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([]);
     //#endregion
 
     //#region get set
-    get menu(): Subject<Array<MenuItemDto>> {
+    get menu(): BehaviorSubject<Array<MenuItemDto>> {
         return this._menu$;
     }
 
-    get toggleVisibleMenu(): Subject<boolean> {
+    get toggleVisibleMenu(): BehaviorSubject<boolean> {
         return this._toggleVisibleMenu$;
     }
 
@@ -28,7 +28,7 @@ export class MenuService {
         this._toggleVisibleMenu$.next(value);
     }
 
-    get breadcrumb(): Subject<Array<string>> {
+    get breadcrumb(): BehaviorSubject<Array<string>> {
         return this._breadcrumb$;
     }
 
