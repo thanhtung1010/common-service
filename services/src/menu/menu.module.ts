@@ -1,7 +1,7 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { IMenuItem } from 'common-firebase';
 import { MENU_TOKEN } from './menu.enum';
 import { MenuService } from './menu.service';
+import { IMenuItem } from './menu.interface';
 
 @NgModule({
     imports: [],
