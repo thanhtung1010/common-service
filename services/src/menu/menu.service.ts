@@ -16,20 +16,20 @@ export class MenuService {
     //#endregion
 
     //#region get set
-    get menu(): Observable<Array<MenuItemDto>> {
-        return this._menu$.asObservable();
+    get menu(): Subject<Array<MenuItemDto>> {
+        return this._menu$;
     }
 
-    get toggleVisibleMenu(): Observable<boolean> {
-        return this._toggleVisibleMenu$.asObservable();
+    get toggleVisibleMenu(): Subject<boolean> {
+        return this._toggleVisibleMenu$;
     }
 
     set toggleVisibleMenu(value: boolean) {
         this._toggleVisibleMenu$.next(value);
     }
 
-    get breadcrumb(): Observable<Array<string>> {
-        return this._breadcrumb$.asObservable();
+    get breadcrumb(): Subject<Array<string>> {
+        return this._breadcrumb$;
     }
 
     set breadcrumb(breadcrumb: Array<string>) {
