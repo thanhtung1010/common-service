@@ -1,46 +1,38 @@
-import { IFirebaseConfig } from "../firebase/firebase.interface";
+import { IFirebaseConfig } from '../firebase/firebase.interface';
 
 export interface IAppConfig {
-  production: boolean;
-  defaultLang: string;
-  lang: string;
-  token: string;
-  assetsUrl: string;
-  apiUrl: string;
-  email: string;
-  phoneNumber: string;
-  defaultPageSize: number;
-  timeoutMs: number;
-  settingFormat: ISettingFormat;
-  firebaseConfig: IFirebaseConfig;
-  googleConfig: IGoogleConfig;
-  remoteModuleUrl: IRemoteModuleUrl;
-  [key: string]: any;
+    production: boolean;
+    defaultLang: string;
+    lang: string;
+    token: string;
+    assetsUrl: string;
+    apiUrl: string;
+    email: string;
+    phoneNumber: string;
+    defaultPageSize: number;
+    timeoutMs: number;
+    settingFormat: ISettingFormat;
+    firebaseConfig: IFirebaseConfig;
+    googleConfig: IGoogleConfig;
+    remoteModuleUrl: IRemoteModuleUrl;
+    [key: string]: any;
 }
 
 export interface ISettingFormat {
-  dateTime: {
-    date: string;
-    time: string;
-    dateTime: string;
-    month: string;
-    year: string;
-  };
-  [key: string]: any;
+    dateTime: {
+        date: string;
+        time: string;
+        dateTime: string;
+        month: string;
+        year: string;
+    };
+    [key: string]: any;
 }
 
 export interface IGoogleConfig {
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export interface IRemoteModuleUrl {
-  [key: string]: any;
+    [key: string]: any;
 }
-
-export interface IMenuItem {
-  title: string;
-  label: string;
-  href: string;
-  children: Array<IMenuItem>;
-  permission: []
-};
