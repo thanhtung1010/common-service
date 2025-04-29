@@ -201,7 +201,6 @@ export class FirebaseCollectionService {
     }
 
     searchDocuments(
-        collectionName: string,
         searchFields: Array<IFirestoreSearchDocument>
     ): Observable<Array<IDocumentData>> {
         return new Observable((subs: Subscriber<Array<IDocumentData>>) => {
@@ -218,7 +217,7 @@ export class FirebaseCollectionService {
                 } else {
                     const _ref = collection(
                         this.firebaseService.store,
-                        collectionName
+                        this.collection
                     );
                     let _query: Query = query(
                         _ref,
