@@ -32,7 +32,7 @@ import { FirebaseService } from './firebase.service';
 @Injectable({
     providedIn: 'root',
 })
-export class FirebaseCollectionService<T> {
+export class FirebaseCollectionService {
     private _collection!: string;
     get collection(): string {
         return this._collection;
