@@ -1,5 +1,5 @@
 export class Helpers {
-    mapObjectParamsToUrl(
+    public mapObjectParamsToUrl(
         urlTemplate: string,
         params: Record<string, string | number>
     ): string {
