@@ -7,6 +7,7 @@ export interface IAppConfig {
     token: string;
     assetsUrl: string;
     apiUrl: string;
+    flagUrl: string;
     email: string;
     phoneNumber: string;
     defaultPageSize: number;

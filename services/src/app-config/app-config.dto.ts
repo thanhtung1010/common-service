@@ -29,6 +29,9 @@ export class AppConfigDto extends BaseDto implements IAppConfig {
     apiUrl!: string;
 
     @Expose()
+    flagUrl!: string;
+
+    @Expose()
     email!: string;
 
     @Expose()
