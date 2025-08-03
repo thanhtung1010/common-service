@@ -2,6 +2,7 @@ import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { BaseDto, Default } from '../base/base.dto';
 import {
     FIREBASE_AUTH_PROVIDER,
+    IDocumentData,
     IFirebaseUser,
     IFirebaseUserMetadata,
     IInitFirebase,
@@ -85,6 +86,24 @@ export class AuthDependenciesDto extends BaseDto implements Dependencies {
 
     @Expose()
     errorMap?: AuthErrorMap;
+}
+
+@Expose()
+export class DocumentDataDto extends BaseDto implements IDocumentData {
+    @Expose()
+    firebaseId!: string;
+
+    @Expose()
+    updatedAt?: string;
+
+    @Expose()
+    deletedAt?: string;
+
+    @Expose()
+    createdById?: string;
+
+    @Expose()
+    createdAt?: string;
 }
 
 @Expose()

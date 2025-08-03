@@ -10,6 +10,7 @@ import {
     query,
     updateDoc,
     where,
+    writeBatch,
 } from 'firebase/firestore';
 import {
     catchError,
@@ -51,7 +52,7 @@ export class FirebaseCollectionService {
         );
     }
 
-    addNewDocument(data: CreateDocumentDto): Observable<IDocumentData> {
+    protected addDoc(item: CreateDocumentDto): Observable<IDocumentData> {
         return new Observable((subs: Subscriber<IDocumentData>) => {
             try {
                 const checkValid = this.firebaseService.checkValidService(
@@ -68,10 +69,10 @@ export class FirebaseCollectionService {
                         this.firebaseService.store,
                         this.collection
                     );
-                    data.createdById = this.firebaseService.user.uid;
-                    const dataJson = this.isInstance(data)
-                        ? CreateDocumentDto.toJson(data)
-                        : data;
+                    item.createdById = this.firebaseService.user.uid;
+                    const dataJson = this.isInstance(item)
+                        ? CreateDocumentDto.toJson(item)
+                        : item;
                     from(addDoc(_ref, dataJson))
                         .pipe(
                             catchError((error) => {
@@ -102,7 +103,54 @@ export class FirebaseCollectionService {
         });
     }
 
-    updateDocument(data: UpdateDocumentDto): Observable<IDocumentData> {
+    protected addDocs(data: Array<CreateDocumentDto>): Observable<Array<IDocumentData>> {
+        return new Observable((subs: Subscriber<Array<IDocumentData>>) => {
+            try {
+                const checkValid = this.firebaseService.checkValidService(
+                    this.collection
+                );
+                if (
+                    checkValid.code &&
+                    checkValid.code !== FIREBASE_ERROR_SERVICE.AUTH
+                ) {
+                    subs.error(checkValid);
+                    subs.complete();
+                } else {
+                    const batch = writeBatch(this.firebaseService.store);
+                    const _ref = collection(
+                        this.firebaseService.store,
+                        this.collection
+                    );
+                    for (const item of data) {
+                        item.createdById = this.firebaseService.user.uid;
+                        const itemJson = this.isInstance(item)
+                            ? CreateDocumentDto.toJson(item)
+                            : data;
+
+                        const docRef = doc(_ref);
+                        batch.set(docRef, itemJson);
+                    }
+                    from(batch.commit())
+                        .subscribe({
+                            next: resp => {
+                                console.log(resp);
+                                subs.next([]);
+                                subs.complete();
+                            },
+                            error: error => {
+                                subs.error(error);
+                                subs.complete();
+                            },
+                        });
+                }
+            } catch (error) {
+                subs.error(error);
+                subs.complete();
+            }
+        });
+    }
+
+    protected updateDocument(data: UpdateDocumentDto): Observable<IDocumentData> {
         return new Observable((subs: Subscriber<IDocumentData>) => {
             try {
                 const checkValid = this.firebaseService.checkValidService(
@@ -149,7 +197,7 @@ export class FirebaseCollectionService {
         });
     }
 
-    deleteDocumentWithID(
+    protected deleteDocumentWithID(
         datas: Array<DeleteDocumentDto>
     ): Observable<Array<Boolean>> {
         return new Observable<Array<Boolean>>(
@@ -200,7 +248,7 @@ export class FirebaseCollectionService {
         );
     }
 
-    searchDocuments(
+    protected searchDocuments(
         searchFields: Array<IFirestoreSearchDocument>
     ): Observable<Array<IDocumentData>> {
         return new Observable((subs: Subscriber<Array<IDocumentData>>) => {
